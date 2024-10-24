@@ -64,50 +64,32 @@ const images = [
         description: 'Lighthouse Coast Sea',
     },
 ];
-// creating is markup
-const gallery = document.querySelector('.gallery');
-const markingString = images
-    .map(
-        ({ preview, original, description }) => `
-<li class="gallery-item">
-<a class="gallery-link" href="${original}">
-    <img
-    class="gallery-image"
-    src="${preview}"
-    data-large-source="${original}"
-    alt="${description}"
-    />
-</a>
-</li>
-`
-    )
-    .join('');
-// add markup to HTML
-gallery.insertAdjacentHTML('afterbegin', markingString);
 
-//event click
-gallery.addEventListener('click', oneClickToModal);
-
-//function for event click
-function oneClickToModal(event) {
-    event.preventDefault();
-
-    if (event.target.nodeName !== 'IMG') {
-        return;
-    }
-
-    const selectedItem = event.target.dataset.largeSource;
-
-    const instance = basicLightbox.create(`
-		<img src="${selectedItem}" width="800" height="600">
-	`);
-
-    instance.show();
-
-    gallery.addEventListener('keydown', (event) => {
-        if (event.code === 'Escape') {
-            instance.close()
-        }
-    });
-
-}
+const galleryContainer = document.querySelector(".gallery");
+const galleryMarkup = images
+  .map(({ preview, original, description }) => {
+    return `
+      <li class="gallery-item">
+        <a class="gallery-link" href="${original}">
+          <img
+            class="gallery-image"
+            src="${preview}"
+            data-source="${original}"
+            alt="${description}"
+          />
+        </a>
+      </li>
+    `;
+  })
+  .join("");
+galleryContainer.innerHTML = galleryMarkup;
+galleryContainer.addEventListener("click", (event) => {
+  event.preventDefault();
+  const target = event.target;
+  if (target.nodeName !== "IMG") return;
+  const imageSource = target.dataset.source;
+  const instance = basicLightbox.create(`
+    <img src="${imageSource}" width="800" height="600">
+  `);
+  instance.show();
+});
